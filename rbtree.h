@@ -14,7 +14,7 @@ typedef struct node_t {
 
 
 void free_tree(node_t* node);
-node_t* new_node(node_t* left, int value, node_t* right);
+node_t* new_node();
 void print_tree(node_t* node);
 
 

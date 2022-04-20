@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include "rbtree.h"
 
-node_t* new_node(node_t* left, int value, node_t* right) {
+node_t* new_node() {
     node_t* ptr = malloc(sizeof(node_t));
-    ptr->value = value;
+    //ptr->value = 0;
     ptr->color = RED; // red by defalut
-    ptr->left = left;
-    ptr->right = right;
+    ptr->left = NULL;
+    ptr->right = NULL;
     return ptr;
 } 
 

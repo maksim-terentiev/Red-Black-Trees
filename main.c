@@ -6,6 +6,7 @@ int main() {
 
     printf("ooooolololololo!\n");
 
+    /*
     node_t* node = new_node(
         new_node(
             NULL,
@@ -23,6 +24,15 @@ int main() {
             NULL
         )
     );
+    */
+    node_t* node = new_node();
+        node->value = 43;
+        node->left=new_node();
+            node->left->value = 41;
+            node->left->right = new_node();
+                node->left->right->value = 42;
+	node->right = new_node();
+		node->right->value = 44;
 
     print_tree(node);
     printf("\n"); // for terminal flushing
