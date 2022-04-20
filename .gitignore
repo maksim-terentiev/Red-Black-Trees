@@ -1,0 +1,7 @@
+# this file tells git which kind of file to ignore
+
+# to ignore all files with suffix '.o'
+*.o
+
+# to ignore all files with suffix '.out'
+*.out
