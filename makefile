@@ -1,22 +1,21 @@
-run:
+.PHONY: run clean build
+.IGNORE: clean
+
+run: main.out
 	./main.out
 
-rerun:
-	make clean
-	make build
+rerun: clean main.out
 	./main.out
 
-build: main.o rbtree.o
+build: main.out
+main.out: main.o rbtree.o
 	gcc -Wall main.o rbtree.o -o main.out
 
 clean:
-	rm -f main.o rbtree.o main.out
+	rm -fv main.o rbtree.o main.out
 
-main.o :
+main.o : main.c rbtree.h
 	gcc -Wall -c main.c -o main.o
 
-rbtree.o :
+rbtree.o : rbtree.c rbtree.h
 	gcc -Wall -c rbtree.c -o rbtree.o
-
-
-
