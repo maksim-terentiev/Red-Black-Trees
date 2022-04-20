@@ -1,5 +1,6 @@
 .PHONY: run clean build
 .IGNORE: clean
+.DEFAULT_GOAL:=build
 
 run: main.out
 	./main.out
