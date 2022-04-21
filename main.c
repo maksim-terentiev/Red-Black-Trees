@@ -5,13 +5,16 @@
 int main() {
 
     node_t* node = new_node();
-        node->value = 43;
+        node->key = 43;
         node->left=new_node();
-            node->left->value = 41;
+	    node->left->parent=node;
+            node->left->key = 41;
             node->left->right = new_node();
-                node->left->right->value = 42;
+	        node->left->right=node->left;
+                node->left->right->key = 42;
 	node->right = new_node();
-		node->right->value = 44;
+	        node->right=node;
+		node->right->key = 44;
 
     print_tree(node);
     printf("\n"); // for terminal flushing

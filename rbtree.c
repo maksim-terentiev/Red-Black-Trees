@@ -23,7 +23,6 @@ void print_tree(node_t* node) {
         putchar('(');
         print_tree(node->left);
         printf(",{%c:%d},", node->color == RED ? 'R' : 'B', node->key);
-        putchar(',');
         print_tree(node->right);
         putchar(')');
     } else {
