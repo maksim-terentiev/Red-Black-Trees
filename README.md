@@ -18,7 +18,7 @@ typedef struct node_t {
 
 ### Properties
 1. Every node is either red or black.
-2. All NIL nodes (figure 1) are considered black.
+2. All NULL nodes are considered black.
 3. A red node does not have a red child.
-4. Every path from a given node to any of its descendant NIL nodes goes through the same number of black nodes.
-5. the root is black
+4. Every path from a given node to any of its descendant NULL nodes goes through the same number of black nodes.
+5. The root of a tree should be black.
