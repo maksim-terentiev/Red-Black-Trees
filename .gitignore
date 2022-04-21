@@ -4,4 +4,11 @@
 *.o
 
 # to ignore all files with suffix '.out'
-*.out
+# Now there aren't .out files
+#*.out
+
+# to ignore all exetutable file main
+main
+
+# to ignore all temporal vim files, suffix '.swp'
+.*.swp
