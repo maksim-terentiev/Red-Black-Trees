@@ -2,18 +2,18 @@
 .IGNORE: clean
 .DEFAULT_GOAL:=build
 
-run: main.out
-	./main.out
+run: main
+	./main
 
-rerun: clean main.out
-	./main.out
+rerun: clean main
+	./main
 
-build: main.out
-main.out: main.o rbtree.o
-	gcc -Wall main.o rbtree.o -o main.out
+build: main
+main: main.o rbtree.o
+	gcc -Wall main.o rbtree.o -o main
 
 clean:
-	rm -fv main.o rbtree.o main.out
+	rm -fv main.o rbtree.o main
 
 main.o : main.c rbtree.h
 	gcc -Wall -c main.c -o main.o
