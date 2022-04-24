@@ -18,6 +18,55 @@ void free_tree(node_t* node) {
     }
 }
 
+void uinsert(node_t** tree, int key){ // Universal insert.
+    if(tree==NULL){                   // Make new root if tree is empty
+        fprintf(stderr,"UInsert error : Wrong call. NULL address got\n");
+        fprintf(stderr,"              : Usage 'uinsert(&root,key);'\n");
+        exit(1);
+    }else if(*tree == NULL){ // Initiation of new tree
+        *tree = new_node();
+        (*tree)->key=key;
+        (*tree)->color=BLACK;
+    }else{
+        insert(*tree,key);
+    }
+}
+
+void insert(node_t* tree, int key){
+    if(tree==NULL){
+        fprintf(stderr,"Insert error : Insert can't be done in NULL pointer\n");
+        fprintf(stderr,"             : Use uinsert instead\n");
+        exit(1);
+    }
+    // Internal looking algorithm, maybe can be change to external function
+    node_t* parent;
+    while(tree!=NULL){
+        parent=tree;
+        if(key>tree->key){
+            tree=tree->right;
+        }else if(key<tree->key){
+            tree=tree->left;
+        }else{
+            fprintf(stderr,"Insert error : Key '%d' already exist\n",key);
+            exit(1);
+        }
+    }
+
+
+    tree = new_node();
+    tree->key=key;
+    tree->color=RED;
+    tree->parent=parent;
+
+    if(key>parent->key)
+        parent->right = tree;
+    else
+        parent->left = tree;
+
+    // TODO: Add code to do red-black tree instead usual tree
+    // ...
+}
+
 void print_tree(node_t* node) {
     if(node != NULL) {
         putchar('(');

@@ -19,6 +19,8 @@ typedef struct node_t {
 void free_tree(node_t* node);
 node_t* new_node();
 void print_tree(node_t* node);
+void insert(node_t *tree,int key); // insert only in existing tree
+void uinsert(node_t **tree,int key);// insert can be done in empty tree
 
 
 #endif
