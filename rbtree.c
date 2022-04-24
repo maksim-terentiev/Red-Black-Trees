@@ -52,7 +52,9 @@ node_t* brother(node_t* node) {
         } else if(node == node->parent->right) {
             return node->parent->left;
         } else {
-            fprintf(stderr, "Impossible! Something wrong!");
+            fprintf(stderr, "Brother error : \"Kid, you're adopted\"\n");
+            fprintf(stderr, "              : Parent node doesn't have pointer to current node\n");
+            fprintf(stderr, "              : Perhaps tree structure corrupted\n");
             exit(1);
         }
     }
@@ -66,7 +68,10 @@ void left_rotate(node_t* pivot) {
     node_t *parent, *root;
     
     parent = pivot->parent;
-    if(parent == NULL) { exit(1); }
+    if(parent == NULL) {
+        fprintf(stderr,"Left Rotate error : Root can't be rotated\n");
+        exit(1);
+    }
     root = parent->parent;
     
     // linking parent's right child to pivot's left child
@@ -95,7 +100,10 @@ void right_rotate(node_t* pivot) {
     node_t *parent, *root;
     
     parent = pivot->parent;
-    if(parent == NULL) { exit(1); }
+    if(parent == NULL) {
+        fprintf(stderr,"Right Rotate error : Root can't be rotated\n");
+        exit(1);
+    }
     root = parent->parent;
     
     // linking parent's left child to pivot's right child
