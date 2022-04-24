@@ -62,32 +62,63 @@ node_t* uncle(node_t* node) {
     return brother(father(node)); // make sense :)
 }
 
-void left_rotate(node_t* node) {
-    node_t *parent, *left, *right;
-    node_t *rightright, *rightleft;
-
-    parent = node->parent;
-
-    left = node->left;
-    if(left == NULL) { exit(1); }
-    right = node->right;
+void left_rotate(node_t* pivot) {
+    node_t *parent, *root;
     
+    parent = pivot->parent;
+    if(parent == NULL) { exit(1); }
+    root = parent->parent;
+    
+    // linking parent's right child to pivot's left child
+    parent->right = pivot->left;
+    if(pivot->left != NULL) {
+        pivot->left->parent = parent;
+    }
+    
+    // linking pivot to root's child
+    pivot->parent = root;
+    if(root != NULL) {
+        if(parent == root->left) {
+            root->left = pivot;
+        } else {
+            root->right = pivot;
+        }
+    }
 
-
-    parent->left = right;
-    right->left = node;
-    right->right = rightright;
-    node->left = left;
-    node->right = rightleft;
-
-    // Well, this is though
-
-    // TODO ... 
-
-
+    // linking pivot's left child to parent
+    pivot->left = parent;
+    parent->parent = pivot;
 
 }
 
+void right_rotate(node_t* pivot) {
+    node_t *parent, *root;
+    
+    parent = pivot->parent;
+    if(parent == NULL) { exit(1); }
+    root = parent->parent;
+    
+    // linking parent's left child to pivot's right child
+    parent->left = pivot->right;
+    if(pivot->right != NULL) {
+        pivot->right->parent = parent;
+    }
+    
+    // linking pivot to root's child
+    pivot->parent = root;
+    if(root != NULL) {
+        if(parent == root->left) {
+            root->left = pivot;
+        } else {
+            root->right = pivot;
+        }
+    }
+
+    // linking pivot's right child to parent
+    pivot->right = parent;
+    parent->parent = pivot;
+
+}
 
 
 /*

@@ -9,10 +9,12 @@ typedef enum color_t {
 } color_t;
 
 typedef struct node_t {
+    int key;
     int value;
     color_t color;
     struct node_t* left;
     struct node_t* right;
+    struct node_t* parent;
 } node_t;
 ```
 
