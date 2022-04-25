@@ -10,10 +10,10 @@ int main() {
 	    node->left->parent=node;
             node->left->key = 41;
             node->left->right = new_node();
-	        node->left->right=node->left;
+	        node->left->right->parent=node->left;
                 node->left->right->key = 42;
 	node->right = new_node();
-	        node->right=node;
+	        node->right->parent=node;
 		node->right->key = 44;
 
     print_tree(node);

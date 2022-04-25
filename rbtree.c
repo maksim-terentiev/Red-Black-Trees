@@ -52,9 +52,13 @@ node_t* brother(node_t* node) {
         } else if(node == node->parent->right) {
             return node->parent->left;
         } else {
-            fprintf(stderr, "Brother error : \"Kid, you're adopted\"\n");
-            fprintf(stderr, "              : Parent node doesn't have pointer to current node\n");
-            fprintf(stderr, "              : Perhaps tree structure corrupted\n");
+            fprintf(
+                stderr,
+                "Brother error : \"Kid, you're adopted\"\n"
+                "              : Parent node doesn't have pointer to current"
+                /* line wrap */" node\n"
+                "              : Perhaps tree structure corrupted\n"
+            );
             exit(1);
         }
     }
