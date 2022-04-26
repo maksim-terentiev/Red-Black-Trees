@@ -18,19 +18,6 @@ void free_tree(node_t* node) {
     }
 }
 
-void print_tree(node_t* node) {
-    if(node != NULL) {
-        putchar('(');
-        print_tree(node->left);
-        printf(",{%c:%d},", node->color == RED ? 'R' : 'B', node->key);
-        print_tree(node->right);
-        putchar(')');
-    } else {
-        putchar('_');
-    }
-}
-
-
 node_t* father(node_t* node) {
     return node->parent;
 }

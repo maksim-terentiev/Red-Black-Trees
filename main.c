@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "rbtree.h"
+#include "tree_print.h"
 
 int main() {
 
