@@ -32,13 +32,6 @@ void rebalance(node_t *node){ // rebalance and recolor after insert
     }
     if(father(node)->color==BLACK) // fine, nothing to do
         return;
-//    if(uncle(node)==NULL){
-//        fprintf("Rebalance warning : Parent is RED, but uncle doesn't exist\n"
-//                "                  : Maybe corruption, maybe I misunderstand"
-//                                   " trees");
-//        father(node)->color=BLACK;
-//        rebalance(father(node);
-//    }
     if(grandpa(node)==NULL){
         fprintf(stderr,"Rebalance warning : Father is root but have RED color\n"
                        "                  : Perhaps  tree structure corrupted\n"
@@ -115,19 +108,6 @@ void insert(node_t* tree, int key){
     rebalance(tree);
 }
 
-void print_tree(node_t* node) {
-    if(node != NULL) {
-        putchar('(');
-        print_tree(node->left);
-        printf(",{%c:%d},", node->color == RED ? 'R' : 'B', node->key);
-        print_tree(node->right);
-        putchar(')');
-    } else {
-        putchar('_');
-    }
-}
-
-
 node_t* father(node_t* node) {
     return node->parent;
 }
@@ -149,7 +129,13 @@ node_t* brother(node_t* node) {
         } else if(node == node->parent->right) {
             return node->parent->left;
         } else {
-            fprintf(stderr, "Impossible! Something wrong!");
+            fprintf(
+                stderr,
+                "Brother error : \"Kid, you're adopted\"\n"
+                "              : Parent node doesn't have pointer to current"
+                /* line wrap */" node\n"
+                "              : Perhaps tree structure corrupted\n"
+            );
             exit(1);
         }
     }
@@ -163,7 +149,10 @@ void left_rotate(node_t* pivot) {
     node_t *parent, *root;
     
     parent = pivot->parent;
-    if(parent == NULL) { exit(1); }
+    if(parent == NULL) {
+        fprintf(stderr,"Left Rotate error : Root can't be rotated\n");
+        exit(1);
+    }
     root = parent->parent;
     
     // linking parent's right child to pivot's left child
@@ -192,7 +181,10 @@ void right_rotate(node_t* pivot) {
     node_t *parent, *root;
     
     parent = pivot->parent;
-    if(parent == NULL) { exit(1); }
+    if(parent == NULL) {
+        fprintf(stderr,"Right Rotate error : Root can't be rotated\n");
+        exit(1);
+    }
     root = parent->parent;
     
     // linking parent's left child to pivot's right child
