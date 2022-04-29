@@ -114,3 +114,45 @@ void print_tree(node_t* node) {
         putchar('_');
     }
 }
+
+node_t* node_buf[65536];
+int node_buf_idx = 0;
+
+void print_tree_no_circle(node_t* node) {
+    node_buf_idx = 0;
+    print_tree_no_circle_body(node);
+    printf("\n");
+}
+    
+void print_tree_no_circle_body(node_t* node) {
+    int i;
+    if(node == NULL) {
+        putchar('_');
+        return;
+    }
+
+    for(i=0; i<node_buf_idx; i++) {
+        if(node_buf[i] == node) {
+            printf("circle!{%c:%d}!", node->color == RED ? 'R' : 'B', node->key);
+            return;
+        }
+    }
+    node_buf[node_buf_idx++] = node;
+    if(node_buf_idx > 10000) {
+        fprintf(stderr, "W!\n");
+        return;
+    }
+
+    if(node != NULL) {
+        putchar('(');
+        print_tree_no_circle_body(node->left);
+        printf(",{%c:%d},", node->color == RED ? 'R' : 'B', node->key);
+        print_tree_no_circle_body(node->right);
+        putchar(')');
+    } else {
+        putchar('?');
+        return;
+        // impossible
+    }
+
+}

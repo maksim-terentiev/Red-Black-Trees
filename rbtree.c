@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include "rbtree.h"
 
+
+
+
 node_t* new_node() {
     node_t* ptr = malloc(sizeof(node_t));
     ptr->left = NULL;
@@ -18,53 +21,81 @@ void free_tree(node_t* node) {
     }
 }
 
+void rebalance_debug(node_t *node) {
+    printf("before rebalance\n");
+    print_tree_no_circle(node);
+
+    rebalance(node);
+
+    printf("after rebalance\n");
+    print_tree_no_circle(node);
+}
+
 void rebalance(node_t *node){ // rebalance and recolor after insert
-    if(node==NULL){
-        fprintf(stderr,
-            "Rebalance warning : You trying to rebalance NULL pointer\n");
+    node_t *father_node, *grandpa_node, *uncle_node;
+    
+    ASSERT(node != NULL,
+        "Rebalance warning : You trying to rebalance NULL pointer\n"
+    );
+
+    father_node = father(node);
+    grandpa_node = grandpa(node);
+    uncle_node = uncle(node);
+    
+    if(node->color == BLACK) // fine, black don't break tree
+        return;
+    if(father_node == NULL) { // root, in black anyway
+        node->color = BLACK;
         return;
     }
-    if(node->color==BLACK) // fine, black don't break tree
+    if(father_node->color == BLACK) // fine, nothing to do
         return;
-    if(father(node)==NULL){ // root, in black anyway
-        node->color=BLACK;
-        return;
-    }
-    if(father(node)->color==BLACK) // fine, nothing to do
-        return;
-    if(grandpa(node)==NULL){
+    if(grandpa_node == NULL) {
         fprintf(stderr,"Rebalance warning : Father is root but have RED color\n"
                        "                  : Perhaps  tree structure corrupted\n"
                        "                  : Autocorrect father color to BLACK\n"
         );
-        rebalance(father(node));
+        exit(1); // let it crush!
+        //rebalance_debug(father(node));
     }
-    if(uncle(node)!=NULL && uncle(node)->color==RED){
+
+    if(uncle_node != NULL && uncle_node->color == RED){
+        printf("Uncle is red! Simple!\n");
         father(node)->color=BLACK;
         uncle(node)->color=BLACK;
         grandpa(node)->color=RED;
-        rebalance(grandpa(node));
+        rebalance_debug(grandpa(node));
         return;
     }
-    if(node->key > father(node)->key){ // we are right leaf
-        father(node)->color=BLACK;
-        grandpa(node)->color=RED;
-        left_rotate(father(node));
-        rebalance(father(node));
-    }else{ // we are left leaf
-        father(node)->color=BLACK;
-        grandpa(node)->color=RED;
-        right_rotate(father(node));
-        rebalance(father(node));
-    }
+
+    if(node == father(node)->right) { // we are right leaf
+        printf("Is right child!\n");
+        ASSERT(father_node != NULL, "father null!\n");
+        ASSERT(grandpa_node != NULL, "grandpa null!\n");
+        father_node->color=BLACK;
+        grandpa_node->color=RED;
+        left_rotate(father_node);
+        rebalance_debug(father_node);
+    } else if(node == father(node)->left) { // we are left leaf
+        printf("Is left child!\n");
+        ASSERT(father_node != NULL, "father null!\n");
+        ASSERT(grandpa_node != NULL, "grandpa null!\n");
+        father_node->color=BLACK;
+        grandpa_node->color=RED;
+        right_rotate(father_node);
+        rebalance_debug(father_node);
+    } else {
+        PANIC("adopted child, so poor!\n");
+    }    
 }
 
 void uinsert(node_t** tree, int key){ // Universal insert.
-    if(tree==NULL){                   // Make new root if tree is empty
-        fprintf(stderr,"UInsert error : Wrong call. NULL address got\n");
-        fprintf(stderr,"              : Usage 'uinsert(&root,key);'\n");
-        exit(1);
-    }else if(*tree == NULL){ // Initiation of new tree
+    ASSERT(tree != NULL, // Make new root if tree is empty
+        "Insert error : Wrong call. NULL address got\n"
+        "             : Usage 'uinsert(&root,key);'\n"
+    );
+
+    if(*tree == NULL){ // Initiation of new tree
         *tree = new_node();
         (*tree)->key=key;
         (*tree)->color=BLACK;
@@ -74,11 +105,11 @@ void uinsert(node_t** tree, int key){ // Universal insert.
 }
 
 void insert(node_t* tree, int key){
-    if(tree==NULL){
-        fprintf(stderr,"Insert error : Insert can't be done in NULL pointer\n");
-        fprintf(stderr,"             : Use uinsert instead\n");
-        exit(1);
-    }
+    ASSERT(tree != NULL, 
+        "Insert error : Insert can't be done in NULL pointer\n"
+        "             : Use uinsert instead\n"
+    );
+
     // Internal looking algorithm, maybe can be change to external function
     node_t* parent;
     while(tree!=NULL){
@@ -93,7 +124,6 @@ void insert(node_t* tree, int key){
         }
     }
 
-
     tree = new_node();
     tree->key=key;
     tree->color=RED;
@@ -105,14 +135,16 @@ void insert(node_t* tree, int key){
         parent->left = tree;
 
     // TODO: Add code to do red-black tree instead usual tree
-    rebalance(tree);
+    rebalance_debug(tree);
 }
 
 node_t* father(node_t* node) {
+    ASSERT(node != NULL, "null pointer!");
     return node->parent;
 }
 
 node_t* grandpa(node_t* node) {
+    ASSERT(node != NULL, "null pointer!");
     if(node->parent == NULL) {
         return NULL;
     } else {
@@ -121,6 +153,7 @@ node_t* grandpa(node_t* node) {
 }
 
 node_t* brother(node_t* node) {
+    ASSERT(node != NULL, "null pointer!");
     if(node->parent == NULL) {
         return NULL;
     } else {
@@ -142,6 +175,7 @@ node_t* brother(node_t* node) {
 }
 
 node_t* uncle(node_t* node) {
+    ASSERT(node != NULL, "null pointer!");
     return brother(father(node)); // make sense :)
 }
 
@@ -149,10 +183,13 @@ void left_rotate(node_t* pivot) {
     node_t *parent, *root;
     
     parent = pivot->parent;
-    if(parent == NULL) {
-        fprintf(stderr,"Left Rotate error : Root can't be rotated\n");
-        exit(1);
-    }
+    ASSERT(parent != NULL,
+        "Left Rotate error : Root can't be rotated\n"
+    );
+    ASSERT(parent->right == pivot,
+        "Left Rotate error : Left child can't be left-rotated\n"
+    );
+
     root = parent->parent;
     
     // linking parent's right child to pivot's left child
@@ -181,10 +218,12 @@ void right_rotate(node_t* pivot) {
     node_t *parent, *root;
     
     parent = pivot->parent;
-    if(parent == NULL) {
-        fprintf(stderr,"Right Rotate error : Root can't be rotated\n");
-        exit(1);
-    }
+    ASSERT(parent != NULL,
+        "Right Rotate error : Root can't be rotated\n"
+    );
+    ASSERT(parent->left == pivot,
+        "Right Rotate error : Right child can't be right-rotated\n"
+    );
     root = parent->parent;
     
     // linking parent's left child to pivot's right child
@@ -206,6 +245,50 @@ void right_rotate(node_t* pivot) {
     // linking pivot's right child to parent
     pivot->right = parent;
     parent->parent = pivot;
+
+}
+
+
+void rotate_test() {
+    node_t O,L,R,LL,LR,RL,RR;
+    O.parent = NULL;
+    O.left = &L;
+    O.right = &R;
+    L.parent = &O;
+    L.left = &LL;
+    L.right = &LR;
+    R.parent = &O;
+    R.left = &RL;
+    R.right = &RR;
+
+    LL.parent = &L;
+    LL.left = NULL;
+    LL.right = NULL;
+    LR.parent = &L;
+    LR.left = NULL;
+    LR.right = NULL;
+    RL.parent = &R;
+    RL.left = NULL;
+    RL.right = NULL;
+    RR.parent = &R;
+    RR.left = NULL;
+    RR.right = NULL;
+    
+    O.key = 0;
+    L.key = 10;
+    R.key = 11;
+    LL.key = 100;
+    LR.key = 101;
+    RL.key = 110;
+    RR.key = 111;
+
+    printf("before test\n");
+    print_tree_no_circle(&O);
+
+    right_rotate(&L);
+
+    printf("after test\n");
+    print_tree_no_circle(&L);
 
 }
 

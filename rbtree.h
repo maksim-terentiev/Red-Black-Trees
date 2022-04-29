@@ -2,6 +2,20 @@
 #define RBTREE_H
 #include <stdbool.h>
 
+#define DEBUG
+
+#define ASSERT(cond, msg...) do { \
+    if(!(cond)) { \
+        fprintf(stderr, msg); \
+        exit(1); \
+    } \
+} while(0)
+
+#define PANIC(msg...) do { \
+    fprintf(stderr, msg); \
+    exit(1); \
+} while(0)
+
 typedef enum color_t {
    RED, BLACK 
 } color_t;
@@ -14,7 +28,6 @@ typedef struct node_t {
     struct node_t* right;
     struct node_t* parent;
 } node_t;
-
 
 void free_tree(node_t* node);
 node_t* new_node();
@@ -31,5 +44,8 @@ void right_rotate(node_t* pivot);
 node_t* tree_lookup(node_t* node, int key);
 int property_test(node_t* node);
 
+// for testing
+void print_tree_no_circle(node_t* node);
+void rotate_test();
 
 #endif
