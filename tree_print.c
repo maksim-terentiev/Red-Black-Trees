@@ -79,7 +79,9 @@ void show_tree(node_t* tree){
 }
 
 void print_tree(node_t* node) {
+    fprintf(stderr,"print node %x\n",node);
     if(node != NULL) {
+        fprintf(stderr," left node %x : right node %x\n",node->left, node->right);
         putchar('(');
         print_tree(node->left);
 #ifdef ENABLE_COLOR
