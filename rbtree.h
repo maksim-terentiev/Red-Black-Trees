@@ -32,20 +32,21 @@ typedef struct node_t {
 void free_tree(node_t* node);
 node_t* new_node();
 void print_tree(node_t* node);
-void insert(node_t *tree,int key); // insert only in existing tree
+node_t* insert(node_t *tree,int key); // insert only in existing tree
 void uinsert(node_t **tree,int key);// insert can be done in empty tree
-void rebalance(node_t *node); // rebalance and recolor after insert
+void rebalance(node_t *node,node_t **root);// rebalance and recolor after insert
 node_t* father(node_t* node);
 node_t* grandpa(node_t* node);
 node_t* brother(node_t* node);
 node_t* uncle(node_t* node);
+node_t* uleft_rotate(node_t* pivot, node_t** root);
 void left_rotate(node_t* pivot);
+node_t* uright_rotate(node_t* pivot,node_t** root);
 void right_rotate(node_t* pivot);
 node_t* tree_lookup(node_t* node, int key);
 int property_test(node_t* node);
 
 // for testing
-void print_tree_no_circle(node_t* node);
 void rotate_test();
 
 #endif
