@@ -18,6 +18,54 @@ void free_tree(node_t* node) {
     }
 }
 
+void rebalance(node_t *node){ // rebalance and recolor after insert
+    if(node==NULL){
+        fprintf(stderr,
+            "Rebalance warning : You trying to rebalance NULL pointer\n");
+        return;
+    }
+    if(node->color==BLACK) // fine, black don't break tree
+        return;
+    if(father(node)==NULL){ // root, in black anyway
+        node->color=BLACK;
+        return;
+    }
+    if(father(node)->color==BLACK) // fine, nothing to do
+        return;
+//    if(uncle(node)==NULL){
+//        fprintf("Rebalance warning : Parent is RED, but uncle doesn't exist\n"
+//                "                  : Maybe corruption, maybe I misunderstand"
+//                                   " trees");
+//        father(node)->color=BLACK;
+//        rebalance(father(node);
+//    }
+    if(grandpa(node)==NULL){
+        fprintf(stderr,"Rebalance warning : Father is root but have RED color\n"
+                       "                  : Perhaps  tree structure corrupted\n"
+                       "                  : Autocorrect father color to BLACK\n"
+        );
+        rebalance(father(node));
+    }
+    if(uncle(node)!=NULL && uncle(node)->color==RED){
+        father(node)->color=BLACK;
+        uncle(node)->color=BLACK;
+        grandpa(node)->color=RED;
+        rebalance(grandpa(node));
+        return;
+    }
+    if(node->key > father(node)->key){ // we are right leaf
+        father(node)->color=BLACK;
+        grandpa(node)->color=RED;
+        left_rotate(father(node));
+        rebalance(father(node));
+    }else{ // we are left leaf
+        father(node)->color=BLACK;
+        grandpa(node)->color=RED;
+        right_rotate(father(node));
+        rebalance(father(node));
+    }
+}
+
 void uinsert(node_t** tree, int key){ // Universal insert.
     if(tree==NULL){                   // Make new root if tree is empty
         fprintf(stderr,"UInsert error : Wrong call. NULL address got\n");
@@ -64,7 +112,7 @@ void insert(node_t* tree, int key){
         parent->left = tree;
 
     // TODO: Add code to do red-black tree instead usual tree
-    // ...
+    rebalance(tree);
 }
 
 void print_tree(node_t* node) {

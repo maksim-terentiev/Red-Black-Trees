@@ -18,10 +18,19 @@ int main() {
 		node->right->key = 44;
     */
 
-    node_t* node;
+    node_t* node=NULL;
     uinsert(&node, 43);
+    print_tree(node);
+    printf("\n"); // for terminal flushing
+
     insert(node,41);
+    print_tree(node);
+    printf("\n"); // for terminal flushing
+
     insert(node,42);
+    print_tree(node);
+    printf("\n"); // for terminal flushing
+
     insert(node,44);
 
     print_tree(node);
