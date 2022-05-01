@@ -1,15 +1,12 @@
 #ifndef _ERR_MACRO_H
+#define _ERR_MACRO_H
 
-#ifndef _STDIO_H
 #include <stdio.h>
-#endif
+#include <stdlib.h>
 
 //#define DEBUG
 #ifdef DEBUG
-
-    #ifndef _PRINTING_H_
     #include "tree_print.h"
-    #endif
 
     #define LOG(msg...) do { \
         fprintf(stderr,msg); \
