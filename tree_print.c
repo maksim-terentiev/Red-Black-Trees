@@ -79,9 +79,9 @@ void show_tree(node_t* tree){
 }
 
 void print_tree(node_t* node) {
-    fprintf(stderr,"print node %x\n",node);
+    //LOG(stderr, "print node %p\n", node);
     if(node != NULL) {
-        fprintf(stderr," left node %x : right node %x\n",node->left, node->right);
+        //LOG(stderr," left node %p : right node %p\n",node->left, node->right);
         putchar('(');
         print_tree(node->left);
 #ifdef ENABLE_COLOR
@@ -95,7 +95,7 @@ void print_tree(node_t* node) {
             putchar(',');
         }else{
             putchar(',');
-            strange_printf("{Err%d:%d}",node->color , node->key);
+            strange_printf("{?:%d}", node->key);
             putchar(',');
         }
 #else

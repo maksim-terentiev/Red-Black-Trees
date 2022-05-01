@@ -6,19 +6,18 @@
 int main() {
     node_t* node=NULL;
     
-    rotate_test();
-
-    uinsert(&node, 43);
-    //print_tree(node);
-    //printf("\n"); // for terminal flushing
+    // rotate_test();
 
     uinsert(&node,41);
-    //print_tree(node);
-    //printf("\n"); // for terminal flushing
-
+    uinsert(&node,45);
     uinsert(&node,42);
+    uinsert(&node,43);
     uinsert(&node,44);
-    print_tree_no_circle(node);
+    uinsert(&node,46);
+    uinsert(&node,48);
+    uinsert(&node,47);
+
+    print_tree(node);
     printf("\n"); // for terminal flushing
 /*
     insert(node,44);
