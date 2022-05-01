@@ -55,6 +55,18 @@ node_t* uncle(node_t* node) {
     return brother(father(node)); // make sense :)
 }
 
+////////////////////////////////////////
+//      Left Rotate Ilustration       //
+////////////////////////////////////////
+//          |                   |     //
+//        root                root    //
+//       /    \              /    \   //
+//    parent   u   ==>    (pivot)  u  //
+//    /    \               /   \      //
+//brother (pivot)      parent  right  //
+//        /  \         /    \         //
+//     left right  brother  left      //
+////////////////////////////////////////
 void left_rotate(node_t* pivot) {
     node_t *parent, *root;
     
@@ -87,6 +99,18 @@ void left_rotate(node_t* pivot) {
 
 }
 
+////////////////////////////////////////
+//      Right Rotate Ilustration      //
+////////////////////////////////////////
+//          |                   |     //
+//        root                root    //
+//       /    \              /    \   //
+//    parent   u   ==>    (pivot)  u  //
+//    /    \             /     \      //
+// (pivot)  brother   left   parent   //
+//   /  \                   /     \   //
+//left right            right  brother//
+////////////////////////////////////////
 void right_rotate(node_t* pivot) {
     node_t *parent, *root;
     
