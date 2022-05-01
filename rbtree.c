@@ -1,6 +1,11 @@
 #include <stdlib.h>
-#include <stdio.h>
+#include "err_macro.h"
 #include "rbtree.h"
+
+// Internal functions
+node_t* insert(node_t *tree,int key); // insert only in existing tree
+void left_rotate(node_t* pivot);
+void right_rotate(node_t* pivot);
 
 node_t* new_node() {
     node_t* ptr = malloc(sizeof(node_t));
@@ -18,11 +23,149 @@ void free_tree(node_t* node) {
     }
 }
 
+void rebalance_debug(node_t *node, node_t** root) {
+    rebalance(node,root);
+}
+
+void rebalance(node_t *node, node_t **root)  // rebalance and recolor after
+{                                            // insert
+    node_t *father_node, *grandpa_node, *uncle_node;
+    bool left_father, left_son;
+
+#ifdef DEBUG
+    // Debug printing : pre
+    LOG("Rebalance node(%p), root(%p) : started\n",node,*root);
+    LOG("root(%p) : Before rebalance\n",*root);
+    print_tree(*root); putchar('\n');
+    LOG("with node(%p)\n",node);
+    LOG("     subtree node(%p): ",node);
+    print_tree(node); putchar('\n');
+#endif
+
+    ASSERT(node == NULL,
+        "Rebalance error : You trying to rebalance NULL pointer\n"
+    );
+
+    father_node = father(node);
+    grandpa_node = grandpa(node);
+    uncle_node = uncle(node);
+    
+    if(node->color == BLACK) // fine, black don't break tree
+    {
+        LOG("Rebalance: node(%p) is black, no actions required\n",node);
+        return;
+    }
+    if(father_node == NULL) { // root, in black anyway
+        LOG("Rebalance: node(%p)->parent is root, in black anyway\n",node);
+        node->color = BLACK;
+        return;
+    }
+    if(father_node->color == BLACK) // fine, nothing to do
+    {
+        LOG("Rebalance: node(%p)->parent is black, no actions required\n",node);
+        return;
+    }
+    
+    ASSERT(grandpa_node == NULL,
+        "Rebalance warning : Father is root but have RED color\n"
+        "                  : Perhaps  tree structure corrupted\n"
+        "                  : Halt program\n"
+    );
+
+    if(uncle_node != NULL && uncle_node->color == RED) {
+        LOG("Rebalance: node(%p)'s uncle is red, simple\n",node);
+        father_node->color=BLACK;
+        uncle_node->color=BLACK;
+        grandpa_node->color=RED;
+        rebalance_debug(grandpa_node,root);
+        return;
+    }
+
+    left_father = is_left_pos(father_node);
+    left_son = is_left_pos(node);
+
+    // if father and son are not on the same side
+    if(left_father ^ left_son) {
+        LOG("Rebalance : Different Side!\n");
+        // rotate son to put them on the same side
+        rotate(node,root);
+        rebalance_debug(father_node, root);
+    } else {
+        LOG("Rebalance : Same Side!\n");
+        father_node->color=BLACK;
+        grandpa_node->color=RED;
+        rotate(father_node,root);
+        //rebalance_debug(father_node,root);
+    }
+
+#ifdef DEBUG
+// Debug printing : after
+    LOG("root(%p) : after rebalance\n",root);
+    print_tree(*root); putchar('\n');
+    LOG("Rebalance node(%p), root(%p) : ended\n",node,*root);
+#endif
+}
+
+void uinsert(node_t** tree, int key)  // Universal insert.
+                                      // Make new root if tree is empty
+{
+    ASSERT(tree == NULL,
+        "Insert error : Wrong call. NULL address got\n"
+        "             : Usage 'uinsert(&root,key);'\n"
+    );
+
+    if(*tree == NULL){ // Initiation of new tree
+        *tree = new_node();
+        (*tree)->key=key;
+        (*tree)->color=BLACK;
+    }else{
+        rebalance_debug(insert(*tree,key), tree);
+        ASSERT(property_test(*tree) == -1,
+            "UInsert : Property test failed!\n"
+        );
+    }
+}
+
+node_t* insert(node_t* tree, int key){ // Internal insert. Return inserted node
+    ASSERT(tree == NULL, 
+        "Insert error : Insert can't be done in NULL pointer\n"
+        "             : Use uinsert instead\n"
+    );
+
+    // Internal looking algorithm, maybe can be change to external function
+    node_t* parent;
+    while(tree!=NULL){
+        parent=tree;
+        if(key>tree->key){
+            tree=tree->right;
+        }else if(key<tree->key){
+            tree=tree->left;
+        }else{
+            fprintf(stderr,"Insert error : Key '%d' already exist\n",key);
+            exit(1);
+        }
+    }
+
+    tree = new_node();
+    tree->key=key;
+    tree->color=RED;
+    tree->parent=parent;
+
+    if(key>parent->key)
+        parent->right = tree;
+    else
+        parent->left = tree;
+
+    return tree;
+}
+
 node_t* father(node_t* node) {
+    ASSERT(node == NULL, "Father error : null pointer!");
     return node->parent;
 }
 
 node_t* grandpa(node_t* node) {
+    ASSERT(node == NULL, "Grandpa error : null pointer!");
     if(node->parent == NULL) {
         return NULL;
     } else {
@@ -31,6 +174,7 @@ node_t* grandpa(node_t* node) {
 }
 
 node_t* brother(node_t* node) {
+    ASSERT(node == NULL, "Brother error : null pointer!");
     if(node->parent == NULL) {
         return NULL;
     } else {
@@ -52,17 +196,71 @@ node_t* brother(node_t* node) {
 }
 
 node_t* uncle(node_t* node) {
-    return brother(father(node)); // make sense :)
+    node_t* father_node;
+    ASSERT(node == NULL, "Uncle error : null pointer!");
+    father_node = father(node);
+
+    if(father_node == NULL) {
+        return NULL;
+    } else {
+        return brother(father_node); // make sense :)
+    }
+}
+
+bool is_left_pos(node_t* node) {
+    node_t* father_node;
+    ASSERT(node == NULL, "is_left_pos error : NULL pointer got\n");
+    father_node = father(node);
+    ASSERT(father_node == NULL, "is_left_pos error : node(%p) is root\n",node);
+    if(node == father_node->left) {
+        return true;
+    } else if(node == father_node->right) {
+        return false;
+    } else {
+        PANIC("is_left_pos error: adopted child(%p), so poor!\n",node);
+    }
+}
+bool is_right_pos(node_t* node){
+    return !is_left_pos(node);
+}
+
+void rotate(node_t* pivot, node_t** root) {    
+#ifdef DEBUG
+    LOG("Rotate pivot(%p) root(%p)\n",pivot, *root);
+    LOG("before rotate:\n");
+    print_tree(father(pivot)); putchar('\n');
+#endif
+
+    if(is_left_pos(pivot)) {
+        LOG("rotating right!\n");
+        right_rotate(pivot);
+        if(pivot->right == *root) {
+            *root = pivot; // update root if changed
+        }
+    } else {
+        LOG("rotating left!\n");
+        left_rotate(pivot);
+        if(pivot->left == *root) {
+            *root = pivot; // update root if changed
+        }
+    }
+#ifdef DEBUG
+    LOG("after rotate:\n");
+    print_tree(pivot); putchar('\n');
+#endif
 }
 
 void left_rotate(node_t* pivot) {
     node_t *parent, *root;
     
     parent = pivot->parent;
-    if(parent == NULL) {
-        fprintf(stderr,"Left Rotate error : Root can't be rotated\n");
-        exit(1);
-    }
+    ASSERT(parent == NULL,
+        "Left Rotate error : Null father!\n"
+    );
+    ASSERT(parent->right != pivot,
+        "Left Rotate error : Left child can't be left-rotated\n"
+    );
+
     root = parent->parent;
     
     // linking parent's right child to pivot's left child
@@ -91,10 +289,12 @@ void right_rotate(node_t* pivot) {
     node_t *parent, *root;
     
     parent = pivot->parent;
-    if(parent == NULL) {
-        fprintf(stderr,"Right Rotate error : Root can't be rotated\n");
-        exit(1);
-    }
+    ASSERT(parent == NULL,
+        "Right Rotate error : Null father!\n"
+    );
+    ASSERT(parent->right == pivot,
+        "Right Rotate error : Right child can't be right-rotated\n"
+    );
     root = parent->parent;
     
     // linking parent's left child to pivot's right child
@@ -116,6 +316,50 @@ void right_rotate(node_t* pivot) {
     // linking pivot's right child to parent
     pivot->right = parent;
     parent->parent = pivot;
+
+}
+
+
+void rotate_test() {
+    node_t O,L,R,LL,LR,RL,RR;
+    O.parent = NULL;
+    O.left = &L;
+    O.right = &R;
+    L.parent = &O;
+    L.left = &LL;
+    L.right = &LR;
+    R.parent = &O;
+    R.left = &RL;
+    R.right = &RR;
+
+    LL.parent = &L;
+    LL.left = NULL;
+    LL.right = NULL;
+    LR.parent = &L;
+    LR.left = NULL;
+    LR.right = NULL;
+    RL.parent = &R;
+    RL.left = NULL;
+    RL.right = NULL;
+    RR.parent = &R;
+    RR.left = NULL;
+    RR.right = NULL;
+    
+    O.key = 0;
+    L.key = 10;
+    R.key = 11;
+    LL.key = 100;
+    LR.key = 101;
+    RL.key = 110;
+    RR.key = 111;
+
+    printf("before test\n");
+    print_tree(&O); putchar('\n');
+
+    right_rotate(&L);
+
+    printf("after test\n");
+    print_tree(&L); putchar('\n');
 
 }
 
@@ -150,7 +394,7 @@ int property_test(node_t* node) {
     int left_depth, right_depth;
 
     if(node == NULL) {
-        return 0;
+        return 1;
     }
 
     // prop 1: Every node is either red or black.
@@ -160,8 +404,10 @@ int property_test(node_t* node) {
     // prop 3: A red node does not have a red child.
 
     if(node->color == RED) {
-        if(node->left->color == RED
-        || node->right->color == RED) {
+        if(node->left != NULL && node->left->color == RED) {
+            return -1;
+        }
+        if(node->right != NULL && node->right->color == RED) {
             return -1;
         }
     }
@@ -190,3 +436,25 @@ int property_test(node_t* node) {
         return left_depth + 1;
     }
 }
+
+/*
+node_t* uleft_rotate(node_t *pivot, node_t **root){ // Universal left rotate
+    left_rotate(pivot);                             // Return value = new root
+    if(father(pivot)==NULL){ // we are root now
+        *root=pivot;
+        return pivot;
+    }
+    else
+        return *root;
+}
+
+node_t* uright_rotate(node_t *pivot, node_t **root){// Universal right rotate
+    right_rotate(pivot);                             // Return value = new root
+    if(father(pivot)==NULL){ // we are root now
+        *root=pivot;
+        return pivot;
+    }
+    else
+        return *root;
+}
+*/

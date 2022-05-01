@@ -2,8 +2,10 @@
 #include <stdarg.h>
 #include "tree_print.h"
 
-#define ENABLE_COLOR
+// Internal functions
+void print_tree_no_circle_body(node_t* node);
 
+#define ENABLE_COLOR
 #ifdef ENABLE_COLOR
 // ANSI escape sequences
 // https://stackoverflow.com/a/23657072
@@ -14,7 +16,7 @@
 #define RESET           "\x1B[0m"
 #endif
 
-#define NUM_LEN 6
+#define NUM_LEN 6 // need for not done show_tree()
 
 // wrappers of printf
 // Get from https://www.cyberforum.ru/c-beginners/thread1703404.html
@@ -79,7 +81,9 @@ void show_tree(node_t* tree){
 }
 
 void print_tree(node_t* node) {
+    //LOG(stderr, "print node %p\n", node);
     if(node != NULL) {
+        //LOG(stderr," left node %p : right node %p\n",node->left, node->right);
         putchar('(');
         print_tree(node->left);
 #ifdef ENABLE_COLOR
@@ -93,7 +97,7 @@ void print_tree(node_t* node) {
             putchar(',');
         }else{
             putchar(',');
-            strange_printf("{Err%d:%d}",node->color , node->key);
+            strange_printf("{?:%d}", node->key);
             putchar(',');
         }
 #else
@@ -111,4 +115,46 @@ void print_tree(node_t* node) {
     } else {
         putchar('_');
     }
+}
+
+node_t* node_buf[65536];
+int node_buf_idx = 0;
+
+void print_tree_no_circle(node_t* node) {
+    node_buf_idx = 0;
+    print_tree_no_circle_body(node);
+    printf("\n");
+}
+    
+void print_tree_no_circle_body(node_t* node) {
+    int i;
+    if(node == NULL) {
+        putchar('_');
+        return;
+    }
+
+    for(i=0; i<node_buf_idx; i++) {
+        if(node_buf[i] == node) {
+            printf("circle!{%c:%d}!", node->color == RED ? 'R' : 'B', node->key);
+            return;
+        }
+    }
+    node_buf[node_buf_idx++] = node;
+    if(node_buf_idx > 10000) {
+        fprintf(stderr, "W!\n");
+        return;
+    }
+
+    if(node != NULL) {
+        putchar('(');
+        print_tree_no_circle_body(node->left);
+        printf(",{%c:%d},", node->color == RED ? 'R' : 'B', node->key);
+        print_tree_no_circle_body(node->right);
+        putchar(')');
+    } else {
+        putchar('?');
+        return;
+        // impossible
+    }
+
 }
