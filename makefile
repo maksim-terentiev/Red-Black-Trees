@@ -15,10 +15,10 @@ build: main
 main: main.o rbtree.o tree_print.o
 	gcc -Wall main.o rbtree.o tree_print.o -o main
 
-main.o : main.c rbtree.h
+main.o : main.c rbtree.h tree_print.h
 	gcc -Wall -c main.c -o main.o
 
-rbtree.o : rbtree.c rbtree.h tree_print.h
+rbtree.o : rbtree.c rbtree.h tree_print.h err_macro.h
 	gcc -Wall -c rbtree.c -o rbtree.o
 
 tree_print.o : tree_print.c tree_print.h

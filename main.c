@@ -6,8 +6,6 @@
 int main() {
     node_t* node=NULL;
     
-    // rotate_test();
-
     uinsert(&node,41);
     uinsert(&node,45);
     uinsert(&node,42);
@@ -19,11 +17,7 @@ int main() {
 
     print_tree(node);
     printf("\n"); // for terminal flushing
-/*
-    insert(node,44);
-    print_tree(node);
-    printf("\n"); // for terminal flushing
-*/
+
     free_tree(node);
     
     return 0;

@@ -2,34 +2,6 @@
 #define RBTREE_H
 #include <stdbool.h>
 
-#define DEBUG
-
-#ifdef DEBUG
-
-    #define LOG(file,msg...) do { \
-        fprintf(file,msg); \
-    } while(0)
-
-    #define ASSERT(cond, msg...) do { \
-        if(!(cond)) { \
-            fprintf(stderr, msg); \
-            exit(1); \
-        } \
-    } while(0)
-
-    #define PANIC(msg...) do { \
-        fprintf(stderr, msg); \
-        exit(1); \
-    } while(0)
-
-#else
-
-    #define LOG(file,msg...) do {} while(1)
-    #define ASSERT(cond,msg...) do {} while(1)
-    #define PANIC(msg...) do {} while(1)
-
-#endif
-
 typedef enum color_t {
    RED, BLACK 
 } color_t;
@@ -53,6 +25,7 @@ node_t* grandpa(node_t* node);
 node_t* brother(node_t* node);
 node_t* uncle(node_t* node);
 bool is_left_pos(node_t* node);
+bool is_right_pos(node_t* node);
 void rotate(node_t* pivot, node_t** root);
 void left_rotate(node_t* pivot);
 void right_rotate(node_t* pivot);
