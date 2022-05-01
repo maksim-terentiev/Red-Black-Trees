@@ -1,8 +1,11 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "err_macro.h"
 #include "rbtree.h"
-#include "tree_print.h"
+
+// Internal functions
+node_t* insert(node_t *tree,int key); // insert only in existing tree
+void left_rotate(node_t* pivot);
+void right_rotate(node_t* pivot);
 
 node_t* new_node() {
     node_t* ptr = malloc(sizeof(node_t));

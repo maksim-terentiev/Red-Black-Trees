@@ -2,8 +2,10 @@
 #include <stdarg.h>
 #include "tree_print.h"
 
-#define ENABLE_COLOR
+// Internal functions
+void print_tree_no_circle_body(node_t* node);
 
+#define ENABLE_COLOR
 #ifdef ENABLE_COLOR
 // ANSI escape sequences
 // https://stackoverflow.com/a/23657072
@@ -14,7 +16,7 @@
 #define RESET           "\x1B[0m"
 #endif
 
-#define NUM_LEN 6
+#define NUM_LEN 6 // need for not done show_tree()
 
 // wrappers of printf
 // Get from https://www.cyberforum.ru/c-beginners/thread1703404.html
