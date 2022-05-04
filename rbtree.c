@@ -23,14 +23,9 @@ void free_tree(node_t* node) {
     }
 }
 
-void rebalance_debug(node_t *node, node_t** root) {
-    rebalance(node,root);
-}
-
 void rebalance(node_t *node, node_t **root)  // rebalance and recolor after
 {                                            // insert
     node_t *father_node, *grandpa_node, *uncle_node;
-    bool left_father, left_son;
 
 #ifdef DEBUG
     // Debug printing : pre
@@ -55,7 +50,8 @@ void rebalance(node_t *node, node_t **root)  // rebalance and recolor after
         LOG("Rebalance: node(%p) is black, no actions required\n",node);
         return;
     }
-    if(father_node == NULL) { // root, in black anyway
+    if(father_node == NULL) // root, in black anyway
+    { 
         LOG("Rebalance: node(%p)->parent is root, in black anyway\n",node);
         node->color = BLACK;
         return;
@@ -77,25 +73,24 @@ void rebalance(node_t *node, node_t **root)  // rebalance and recolor after
         father_node->color=BLACK;
         uncle_node->color=BLACK;
         grandpa_node->color=RED;
-        rebalance_debug(grandpa_node,root);
+        rebalance(grandpa_node,root);
         return;
     }
 
-    left_father = is_left_pos(father_node);
-    left_son = is_left_pos(node);
-
     // if father and son are not on the same side
-    if(left_father ^ left_son) {
+    if(is_left_pos(father_node) ^ is_left_pos(node)) {
         LOG("Rebalance : Different Side!\n");
         // rotate son to put them on the same side
         rotate(node,root);
-        rebalance_debug(father_node, root);
+        node->color=BLACK;
+        grandpa_node->color=RED;
+        rotate(node,root);
     } else {
         LOG("Rebalance : Same Side!\n");
         father_node->color=BLACK;
         grandpa_node->color=RED;
         rotate(father_node,root);
-        //rebalance_debug(father_node,root);
+        rebalance(father_node,root);
     }
 
 #ifdef DEBUG
@@ -120,7 +115,7 @@ void uinsert(node_t** tree, int key,int value)  // Universal insert.
         (*tree)->color=BLACK;
         (*tree)->value=value;
     }else{
-        rebalance_debug(insert(*tree,key,value), tree);
+        rebalance(insert(*tree,key,value), tree);
         ASSERT(property_test(*tree) == -1,
             "UInsert : Property test failed!\n"
         );
@@ -377,7 +372,7 @@ node_t* tree_lookup(node_t* node, int key) {
         return node;
     } else if(key < node->key ) {
         return tree_lookup(node->left, key);
-    } else { // if(node->key > key)
+    } else { // if(key > node->key)
         return tree_lookup(node->right, key);
     }
 }
@@ -438,25 +433,3 @@ int property_test(node_t* node) {
         return left_depth + 1;
     }
 }
-
-/*
-node_t* uleft_rotate(node_t *pivot, node_t **root){ // Universal left rotate
-    left_rotate(pivot);                             // Return value = new root
-    if(father(pivot)==NULL){ // we are root now
-        *root=pivot;
-        return pivot;
-    }
-    else
-        return *root;
-}
-
-node_t* uright_rotate(node_t *pivot, node_t **root){// Universal right rotate
-    right_rotate(pivot);                             // Return value = new root
-    if(father(pivot)==NULL){ // we are root now
-        *root=pivot;
-        return pivot;
-    }
-    else
-        return *root;
-}
-*/

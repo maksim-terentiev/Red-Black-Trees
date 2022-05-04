@@ -5,6 +5,5 @@
 
 void show_tree(node_t* tree);
 void print_tree(node_t* node);
-void print_tree_no_circle(node_t* node);
 
 #endif
