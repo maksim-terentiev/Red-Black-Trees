@@ -76,9 +76,61 @@ int strange_printf(const char* format_str,...){
     return res;
 }
 
-void show_tree(node_t* tree){
-    // TODO
+// show tree
+void print_spaces(int n){
+    int i;
+    for(i=0;i<n;i++)
+        putchar(' ');
 }
+#define TABSIZE 2
+int goup(node_t **tree, int *tab)  // goes up(back) and right to tree,
+{                                  // returns 0 if root
+    node_t *tmp=*tree;
+    *tree=(*tree)->parent;
+    *tab-=TABSIZE;
+
+    while(*tree!=NULL){
+        if( (*tree)->right!=NULL && !is_right_pos(tmp) ){
+            *tree=(*tree)->right;
+            *tab+=TABSIZE;
+            return 1;
+        }else{
+            tmp=*tree;
+            *tree=(*tree)->parent;
+            *tab-=TABSIZE;
+        }
+    }
+    return 0;
+}
+void show_tree(node_t* tree){
+    int tab=0;
+    int bcont=1; // boolean for continue
+    while(bcont){
+        print_spaces(tab);
+        if(tree->color==RED)
+            red_printf("%d: %d\n",tree->key,tree->value);
+        else if(tree->color==BLACK)
+            black_printf("%d: %d\n",tree->key,tree->value);
+        else
+            strange_printf("%d: %d\n",tree->key,tree->value);
+        if(tree->left!=NULL){
+            tree=tree->left;
+            tab+=TABSIZE;
+            continue;
+        }else{
+            print_spaces(tab+TABSIZE); black_printf("NULL\n");
+        }
+        if(tree->right!=NULL){
+            tree=tree->right;
+            tab+=TABSIZE;
+            continue;
+        }else{
+            print_spaces(tab+TABSIZE); black_printf("NULL\n");
+        }
+        bcont = goup(&tree,&tab);
+    }
+}
+#undef TABSIZE
 
 void print_tree(node_t* node) {
     //LOG(stderr, "print node %p\n", node);

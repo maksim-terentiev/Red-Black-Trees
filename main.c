@@ -17,6 +17,7 @@ int main() {
 
     print_tree(node);
     printf("\n"); // for terminal flushing
+    show_tree(node);
 
     free_tree(node);
     
