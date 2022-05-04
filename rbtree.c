@@ -434,3 +434,98 @@ int property_test(node_t* node) {
         return left_depth + 1;
     }
 }
+
+
+void delRebalance(node_t* tree) {
+	node_t* bro = brother(tree);
+	if (tree == tree->parent->left) {
+		if (bro->color == BLACK) {
+			if (bro->right->color == RED) {
+				bro->color = bro->parent->color;
+				bro->parent->color = BLACK;
+				bro->right->color = RED;
+				left_rotate(bro);
+			}
+			else if ((bro->left->color == RED) && (bro->right->color == BLACK)) {
+				bro->color = RED;
+				bro->left->color = BLACK;
+				right_rotate(bro->left);
+			}
+			else if ((bro->left->color == BLACK) && (bro->right->color == BLACK)) {
+				bro->color = RED;
+				if (tree->parent->color == RED) tree->parent->color = BLACK;
+				else {
+					delRebalance(tree->parent);
+				}
+			}
+		}
+		else {
+			tree->parent->color = RED;
+			bro->color = BLACK;
+			node_t* parent = bro->parent;
+			left_rotate(bro);
+			delRebalance(parent);
+		}
+	}
+}
+
+node_t* min(node_t* tree) {
+	if (tree->left != NULL) return min(tree->left);
+    else return tree;
+}
+
+int numOfChild(node_t* tree) {
+    int num = 0;
+    if (tree->left != NULL) num++;
+    if (tree->right != NULL) num++;
+    return num;
+}
+
+void toNull(node_t* tree) {
+    if((tree == NULL) || (tree->parent == NULL)) return;
+    
+    if (tree->parent->left == tree) tree->parent->left = NULL;
+	else tree->parent->right = NULL;
+	
+    free(tree);
+}
+
+void del(node_t* tree, int key) {
+	ASSERT(tree == NULL, "Delete error : Delete can't be done in NULL pointer\n");
+
+    while(tree != NULL){
+        if(key > tree->key) tree = tree->right;
+        else if(key < tree->key) tree = tree->left;
+        else break;
+    }
+    if (tree == NULL) {
+        fprintf(stderr,"Delete error : Key '%d' do not exist\n", key);
+        exit(1);
+    }
+    
+    if ((tree->color == RED) && (numOfChild(tree) == 0)) {
+    	toNull(tree);
+    }
+    else if (numOfChild(tree) == 2) {
+    	node_t* minRight = min(tree->right);
+    	int temp = tree->key;
+    	tree->key = minRight->key;
+    	minRight->key = temp;
+    	del(minRight, minRight->key);
+    }
+    else if ((tree->color == BLACK) && (numOfChild(tree) == 0)) {
+    	
+    	delRebalance(tree);
+    }
+    else if ((tree->color == BLACK) && (numOfChild(tree) == 1)) {
+    	if (tree->left == NULL) {
+    		tree->key = tree->right->key;
+    		toNull(tree->right);
+    	}
+    	else {
+    		tree->key = tree->left->key;
+    		toNull(tree->left);
+    	}
+    }
+    
+}
