@@ -375,7 +375,7 @@ node_t* tree_lookup(node_t* node, int key) {
 
     if(node->key == key) {
         return node;
-    } else if(node->key < key) {
+    } else if(key < node->key ) {
         return tree_lookup(node->left, key);
     } else { // if(node->key > key)
         return tree_lookup(node->right, key);
