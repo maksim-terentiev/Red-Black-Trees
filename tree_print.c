@@ -105,6 +105,10 @@ int goup(node_t **tree, int *tab)  // goes up(back) and right to tree,
 void show_tree(node_t* tree){
     int tab=0;
     int bcont=1; // boolean for continue
+    if(tree==NULL){
+        black_printf("NULL\n");
+        return;
+    }
     while(bcont){
         print_spaces(tab);
         if(tree->color==RED)
