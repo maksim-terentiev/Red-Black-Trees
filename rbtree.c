@@ -85,6 +85,7 @@ void rebalance(node_t *node, node_t **root)  // rebalance and recolor after
         node->color=BLACK;
         grandpa_node->color=RED;
         rotate(node,root);
+        rebalance(node,root);
     } else {
         LOG("Rebalance : Same Side!\n");
         father_node->color=BLACK;
