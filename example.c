@@ -47,7 +47,8 @@ int main() {
                           };
   node_t* node = NULL;
 
-  for (i = 0; i < CUR_LEN; i++) {uinsert(&node, id[i], 0);}
+  for (i = 0; i < CUR_LEN; i++)
+      uinsert(&node, id[i], phoneNumbers[id[i]-1]);
 
   printf("\n\n\t\t<<<<<{Test program v1.0}>>>>>");
   printf("\n\n>>> There are %d subscribers in this phone book", CUR_LEN);
@@ -56,14 +57,16 @@ int main() {
 
   if (curId > MAX_LEN || curId < 1) {ID_ERROR exit(-1);}
 
-  if (tree_lookup(node, curId) == NULL) printf(">>> Subscriber with id = %d was not found. \n", curId);
+  node_t *find=tree_lookup(node, curId);
+  if (find == NULL) printf(">>> Subscriber with id = %d was not found. \n", curId);
   else printf(">>> Subscriber with id = %d has been found.\n\
 >>> His phone number: +7 (%ld) %ld-%ld-%ld.\n\n\n", curId, \
-  (phoneNumbers[curId - 1] / 10000000) % 1000, (phoneNumbers[curId - 1] % 10000000) / 10000,\
-  (phoneNumbers[curId - 1] % 10000) / 100, (phoneNumbers[curId - 1] % 100));
+  (find->value / 10000000) % 1000, (find->value % 10000000) / 10000,\
+  (find->value % 10000) / 100, (find->value % 100));
 
   //print_tree(node);
   //printf("\n"); // for terminal flushing
+  //show_tree(node);
   free_tree(node);
   
   return  0;

@@ -6,9 +6,10 @@ typedef enum color_t {
    RED, BLACK 
 } color_t;
 
+#define VALUE_TYPE long int
 typedef struct node_t {
     int key;
-    int value;
+    VALUE_TYPE value;
     color_t color;
     struct node_t* left;
     struct node_t* right;
@@ -17,7 +18,7 @@ typedef struct node_t {
 
 void free_tree(node_t* node);
 node_t* new_node();
-void uinsert(node_t **tree,int key,int value);//insert can be done in empty tree
+void uinsert(node_t **tree,int key,VALUE_TYPE value);//insert can be done in empty tree
 void rebalance(node_t *node,node_t **root);// rebalance and recolor after insert
 node_t* father(node_t* node);
 node_t* grandpa(node_t* node);

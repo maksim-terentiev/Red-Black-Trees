@@ -3,7 +3,7 @@
 #include "rbtree.h"
 
 // Internal functions
-node_t* insert(node_t *tree,int key,int value); // insert only in existing tree
+node_t* insert(node_t *tree,int key,VALUE_TYPE value); // insert only in existing tree
 void left_rotate(node_t* pivot);
 void right_rotate(node_t* pivot);
 
@@ -102,7 +102,7 @@ void rebalance(node_t *node, node_t **root)  // rebalance and recolor after
 #endif
 }
 
-void uinsert(node_t** tree, int key,int value)  // Universal insert.
+void uinsert(node_t** tree, int key,VALUE_TYPE value)  // Universal insert.
                                       // Make new root if tree is empty
 {
     ASSERT(tree == NULL,
@@ -123,7 +123,7 @@ void uinsert(node_t** tree, int key,int value)  // Universal insert.
     }
 }
 
-node_t* insert(node_t* tree, int key,int value){ // Internal insert. Return inserted node
+node_t* insert(node_t* tree, int key,VALUE_TYPE value){ // Internal insert. Return inserted node
     ASSERT(tree == NULL, 
         "Insert error : Insert can't be done in NULL pointer\n"
         "             : Use uinsert instead\n"

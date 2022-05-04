@@ -112,11 +112,11 @@ void show_tree(node_t* tree){
     while(bcont){
         print_spaces(tab);
         if(tree->color==RED)
-            red_printf("%d: %d\n",tree->key,tree->value);
+            red_printf("%d: %ld\n",tree->key,tree->value);
         else if(tree->color==BLACK)
-            black_printf("%d: %d\n",tree->key,tree->value);
+            black_printf("%d: %ld\n",tree->key,tree->value);
         else
-            strange_printf("%d: %d\n",tree->key,tree->value);
+            strange_printf("%d: %ld\n",tree->key,tree->value);
         if(tree->left!=NULL){
             tree=tree->left;
             tab+=TABSIZE;

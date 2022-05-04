@@ -1,6 +1,6 @@
 .PHONY: run clean build
 .IGNORE: clean
-.DEFAULT_GOAL:=build
+.DEFAULT_GOAL:=example
 
 run: main
 	./main
@@ -12,7 +12,7 @@ rune: example
 	./example
 
 clean:
-	rm -fv main.o rbtree.o tree_print.o main
+	rm -fv main.o rbtree.o tree_print.o example.o main
 
 build: main
 main: main.o rbtree.o tree_print.o
