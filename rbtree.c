@@ -3,7 +3,7 @@
 #include "rbtree.h"
 
 // Internal functions
-node_t* insert(node_t *tree,int key); // insert only in existing tree
+node_t* insert(node_t *tree,int key,int value); // insert only in existing tree
 void left_rotate(node_t* pivot);
 void right_rotate(node_t* pivot);
 
@@ -106,7 +106,7 @@ void rebalance(node_t *node, node_t **root)  // rebalance and recolor after
 #endif
 }
 
-void uinsert(node_t** tree, int key)  // Universal insert.
+void uinsert(node_t** tree, int key,int value)  // Universal insert.
                                       // Make new root if tree is empty
 {
     ASSERT(tree == NULL,
@@ -118,15 +118,16 @@ void uinsert(node_t** tree, int key)  // Universal insert.
         *tree = new_node();
         (*tree)->key=key;
         (*tree)->color=BLACK;
+        (*tree)->value=value;
     }else{
-        rebalance_debug(insert(*tree,key), tree);
+        rebalance_debug(insert(*tree,key,value), tree);
         ASSERT(property_test(*tree) == -1,
             "UInsert : Property test failed!\n"
         );
     }
 }
 
-node_t* insert(node_t* tree, int key){ // Internal insert. Return inserted node
+node_t* insert(node_t* tree, int key,int value){ // Internal insert. Return inserted node
     ASSERT(tree == NULL, 
         "Insert error : Insert can't be done in NULL pointer\n"
         "             : Use uinsert instead\n"
@@ -150,6 +151,7 @@ node_t* insert(node_t* tree, int key){ // Internal insert. Return inserted node
     tree->key=key;
     tree->color=RED;
     tree->parent=parent;
+    tree->value=value;
 
     if(key>parent->key)
         parent->right = tree;

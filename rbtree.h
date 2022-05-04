@@ -17,7 +17,7 @@ typedef struct node_t {
 
 void free_tree(node_t* node);
 node_t* new_node();
-void uinsert(node_t **tree,int key);// insert can be done in empty tree
+void uinsert(node_t **tree,int key,int value);//insert can be done in empty tree
 void rebalance(node_t *node,node_t **root);// rebalance and recolor after insert
 node_t* father(node_t* node);
 node_t* grandpa(node_t* node);

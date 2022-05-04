@@ -6,14 +6,14 @@
 int main() {
     node_t* node=NULL;
     
-    uinsert(&node,41);
-    uinsert(&node,45);
-    uinsert(&node,42);
-    uinsert(&node,43);
-    uinsert(&node,44);
-    uinsert(&node,46);
-    uinsert(&node,48);
-    uinsert(&node,47);
+    uinsert(&node,41,1);
+    uinsert(&node,45,2);
+    uinsert(&node,42,3);
+    uinsert(&node,43,4);
+    uinsert(&node,44,5);
+    uinsert(&node,46,6);
+    uinsert(&node,48,7);
+    uinsert(&node,47,8);
 
     print_tree(node);
     printf("\n"); // for terminal flushing
