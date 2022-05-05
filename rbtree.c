@@ -3,9 +3,11 @@
 #include "rbtree.h"
 
 // Internal functions
-node_t* insert(node_t *tree,int key,VALUE_TYPE value); // insert only in existing tree
-void left_rotate(node_t* pivot);
-void right_rotate(node_t* pivot);
+static node_t* insert(node_t *tree,int key,VALUE_TYPE value); // insert only in existing tree
+static void left_rotate(node_t* pivot);
+static void right_rotate(node_t* pivot);
+static void rebalance(node_t *node,node_t **root);// rebalance and recolor after insert
+static void rotate(node_t* pivot, node_t** root);
 
 node_t* new_node() {
     node_t* ptr = malloc(sizeof(node_t));
