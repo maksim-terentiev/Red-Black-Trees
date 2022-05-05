@@ -467,11 +467,40 @@ void delRebalance(node_t* tree) {
 			delRebalance(parent);
 		}
 	}
+	else {
+		if (bro->color == BLACK) {
+			if (bro->left->color == RED) {
+				bro->color = bro->parent->color;
+				bro->parent->color = BLACK;
+				bro->left->color = RED;
+				right_rotate(bro);
+			}
+			else if ((bro->right->color == RED) && (bro->left->color == BLACK)) {
+				bro->color = RED;
+				bro->right->color = BLACK;
+				left_rotate(bro->right);
+			}
+			else if ((bro->right->color == BLACK) && (bro->left->color == BLACK)) {
+				bro->color = RED;
+				if (tree->parent->color == RED) tree->parent->color = BLACK;
+				else {
+					delRebalance(tree->parent);
+				}
+			}
+		}
+		else {
+			tree->parent->color = RED;
+			bro->color = BLACK;
+			node_t* parent = bro->parent;
+			right_rotate(bro);
+			delRebalance(parent);
+		}
+	}
 }
 
 node_t* min(node_t* tree) {
 	if (tree->left != NULL) return min(tree->left);
-    else return tree;
+	else return tree;
 }
 
 int numOfChild(node_t* tree) {
@@ -482,50 +511,95 @@ int numOfChild(node_t* tree) {
 }
 
 void toNull(node_t* tree) {
-    if((tree == NULL) || (tree->parent == NULL)) return;
-    
-    if (tree->parent->left == tree) tree->parent->left = NULL;
+	if (tree == NULL) return;
+	if (tree->parent == NULL) return;
+	
+	if (tree->parent->left == tree) tree->parent->left = NULL;
 	else tree->parent->right = NULL;
 	
-    free(tree);
+	free(tree);
 }
 
-void del(node_t* tree, int key) {
-	ASSERT(tree == NULL, "Delete error : Delete can't be done in NULL pointer\n");
+void del(node_t** tree1, int key) {
+	printf("I delete key = %d\n", key);
+	//ASSERT(tree1 == NULL, "Delete error : pointer of NULL");
+	
+	node_t * tree = *tree1;///Don`t touch "tree1"!
+	
+	int triger = (tree -> key) == key;
+	
+	//ASSERT(tree == NULL, "Delete error : Delete can't be done in NULL pointer\n");
+	
+	while(tree != NULL){
+        	if(key > tree->key) tree = tree->right;
+		else if(key < tree->key) tree = tree->left;
+		else break;
+	}
+	if (tree == NULL) {
+		fprintf(stderr,"Delete error : Key '%d' do not exist\n", key);
+		exit(1);
+	}
+	if ((tree->color == RED) && (numOfChild(tree) == 0))
+		if (triger){
+			*tree1 = NULL;//I have told you
+			free(tree);
+		}
+		else
+			toNull(tree);
+	else if (numOfChild(tree) == 2) {
+		node_t* minRight = min(tree->right);
+                int tmp = tree->key;
+		
+		if (triger){
+                        (*tree1) -> key = minRight->key;
+                        minRight -> key = tmp;
+                        del(&minRight, tmp);
 
-    while(tree != NULL){
-        if(key > tree->key) tree = tree->right;
-        else if(key < tree->key) tree = tree->left;
-        else break;
-    }
-    if (tree == NULL) {
-        fprintf(stderr,"Delete error : Key '%d' do not exist\n", key);
-        exit(1);
-    }
-    
-    if ((tree->color == RED) && (numOfChild(tree) == 0)) {
-    	toNull(tree);
-    }
-    else if (numOfChild(tree) == 2) {
-    	node_t* minRight = min(tree->right);
-    	int temp = tree->key;
-    	tree->key = minRight->key;
-    	minRight->key = temp;
-    	del(minRight, minRight->key);
-    }
-    else if ((tree->color == BLACK) && (numOfChild(tree) == 0)) {
-    	
-    	delRebalance(tree);
-    }
-    else if ((tree->color == BLACK) && (numOfChild(tree) == 1)) {
-    	if (tree->left == NULL) {
-    		tree->key = tree->right->key;
-    		toNull(tree->right);
+		}
+		else
+		{
+			tree->key = minRight->key;
+			minRight->key = tmp;
+			del(&minRight, tmp);
+		}
+	}
+	else if ((tree->color == BLACK) && (numOfChild(tree) == 0)) {
+		if (triger)
+		{
+			*tree1 = NULL;///It is dangerouse
+			free(tree);
+		}
+		else
+		{
+			node_t *tmp = tree;
+			toNull(tree);
+			delRebalance(tmp -> parent);
+		};
+	}
+	else if ((tree->color == BLACK) && (numOfChild(tree) == 1)) {
+    		if (tree->left == NULL) {
+			if (triger){
+				*tree1 = tree->right;//It is ...
+				free(tree);
+			}
+			else
+			{
+	    			tree->key = tree->right->key;// ...
+	    			toNull(tree->right);
+			}
+	    	}
+	    	else {
+			if (triger){
+	
+	                        *tree1 = tree->left;
+	                        free(tree);
+	                }
+	                else
+	                {
+				tree->key = tree->left->key;
+	    			toNull(tree->left);
+			}
+	    	}
     	}
-    	else {
-    		tree->key = tree->left->key;
-    		toNull(tree->left);
-    	}
-    }
-    
+	
 }

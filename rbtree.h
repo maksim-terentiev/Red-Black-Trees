@@ -34,7 +34,7 @@ void delRebalance(node_t* tree);
 node_t* min(node_t* tree);
 int numOfChild(node_t* tree);
 void toNull(node_t* tree);
-void del(node_t* tree, int key);
+void del(node_t** tree, int key);
 
 // for testing
 void rotate_test();
