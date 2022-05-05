@@ -94,7 +94,10 @@ int goup(node_t **tree, int *tab)  // goes up(back) and right to tree,
             *tree=(*tree)->right;
             *tab+=TABSIZE;
             return 1;
-        }else{
+    }else{
+        if(!is_right_pos(tmp)){
+            print_spaces(*tab+TABSIZE); black_printf("NULL\n");
+        }
             tmp=*tree;
             *tree=(*tree)->parent;
             *tab-=TABSIZE;
