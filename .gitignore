@@ -9,6 +9,7 @@
 
 # to ignore all exetutable file main
 main
+example
 
 # to ignore all temporal vim files, suffix '.swp'
 .*.swp

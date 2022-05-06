@@ -3,11 +3,11 @@
 #include "rbtree.h"
 #include "tree_print.h"
 
-#define MAX_LEN 1000
+#define MAX_LEN 100
 #define CUR_LEN 100
 
 #define input printf(">>> Input number (0, 1, 2, 3): ");
-#define ID_ERROR fprintf(stderr, ">>> [ERROR]: invalid id value (%d not in [1; %d])!\n", curId, CUR_LEN);
+#define ID_ERROR fprintf(stderr, ">>> [ERROR]: invalid id value (%d not in [1; %d])!\n", curId, CUR_LEN)
 
 int main() {
   int i, curId, id[CUR_LEN] = {66, 61, 70, 2, 49, 23, 97, 7, 93, 62, 43, 1, 37,
@@ -55,14 +55,22 @@ int main() {
   printf("Input subscriber id (1 - %d): ", MAX_LEN);
   scanf("%d", &curId);
 
-  if (curId > MAX_LEN || curId < 1) {ID_ERROR exit(-1);}
+  if (curId > MAX_LEN || curId < 1) {
+      ID_ERROR;
+      exit(-1);
+  }
 
   node_t *find=tree_lookup(node, curId);
-  if (find == NULL) printf(">>> Subscriber with id = %d was not found. \n", curId);
-  else printf(">>> Subscriber with id = %d has been found.\n\
->>> His phone number: +7 (%ld) %ld-%ld-%ld.\n\n\n", curId, \
-  (find->value / 10000000) % 1000, (find->value % 10000000) / 10000,\
-  (find->value % 10000) / 100, (find->value % 100));
+  if (find == NULL)
+      printf(">>> Subscriber with id = %d was not found. \n", curId);
+  else printf(">>> Subscriber with id = %d has been found.\n"
+              ">>> His phone number: +7 (%ld) %ld-%ld-%ld.\n\n\n",
+              curId,
+              (find->value / 10000000) % 1000,
+              (find->value % 10000000) / 10000,
+              (find->value % 10000) / 100,
+              (find->value % 100)
+  );
 
   //print_tree(node);
   //printf("\n"); // for terminal flushing

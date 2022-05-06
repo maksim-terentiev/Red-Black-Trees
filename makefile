@@ -12,7 +12,7 @@ rune: example
 	./example
 
 clean:
-	rm -fv main.o rbtree.o tree_print.o example.o main
+	rm -fv main.o rbtree.o tree_print.o example.o example main
 
 build: main
 main: main.o rbtree.o tree_print.o
