@@ -111,11 +111,14 @@ void show_tree(node_t* tree){
     while(bcont){
         print_spaces(tab);
         if(tree->color==RED)
-            red_printf("%d: %ld\n",tree->key,tree->value);
+            red_printf(KEY_FORMAT_STR": "VALUE_FORMAT_STR"\n",
+                       tree->key,tree->value);
         else if(tree->color==BLACK)
-            black_printf("%d: %ld\n",tree->key,tree->value);
+            black_printf(KEY_FORMAT_STR": "VALUE_FORMAT_STR"\n",
+                         tree->key,tree->value);
         else
-            strange_printf("%d: %ld\n",tree->key,tree->value);
+            strange_printf(KEY_FORMAT_STR": "VALUE_FORMAT_STR"\n",
+                           tree->key,tree->value);
         if(tree->left!=NULL){
             tree=tree->left;
             tab+=TABSIZE;
@@ -144,25 +147,25 @@ void print_tree(node_t* node) {
 #ifdef ENABLE_COLOR
         if(node->color==RED){
             putchar(',');
-            red_printf("{R:%d}", node->key);
+            red_printf("{R:"KEY_FORMAT_STR"}", node->key);
             putchar(',');
         }else if(node->color==BLACK){
             putchar(',');
-            black_printf("{B:%d}", node->key);
+            black_printf("{B:"KEY_FORMAT_STR"}", node->key);
             putchar(',');
         }else{
             putchar(',');
-            strange_printf("{?:%d}", node->key);
+            strange_printf("{?:"KEY_FORMAT_STR"}", node->key);
             putchar(',');
         }
 #else
         //printf(",{%s:%d},", node->color == RED ? "R" : "B", node->key);
         if(node->color==RED){
-            printf(",{R:%d},", node->key);
+            printf(",{R:"KEY_FORMAT_STR"},", node->key);
         }else if(node->color==BLACK){
-            printf(",{B:%d},", node->key);
+            printf(",{B:"KEY_FORMAT_STR"},", node->key);
         }else{
-            printf(",{Err%d:%d},",node->color , node->key);
+            printf(",{Err%d:"KEY_FORMAT_STR"},",node->color , node->key);
         }
 #endif
         print_tree(node->right);

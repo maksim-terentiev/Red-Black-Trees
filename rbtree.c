@@ -3,7 +3,8 @@
 #include "rbtree.h"
 
 // Internal functions
-static node_t* insert(node_t *tree,int key,VALUE_TYPE value); // insert only in existing tree
+            // insert only in existing tree
+static node_t* insert(node_t *tree,KEY_TYPE key,VALUE_TYPE value);
 static void left_rotate(node_t* pivot);
 static void right_rotate(node_t* pivot);
 static void rebalance(node_t *node,node_t **root);// rebalance and recolor after insert
@@ -104,8 +105,19 @@ void rebalance(node_t *node, node_t **root)  // rebalance and recolor after
 #endif
 }
 
-void uinsert(node_t** tree, int key,VALUE_TYPE value)  // Universal insert.
-                                      // Make new root if tree is empty
+bool key_less(KEY_TYPE a, KEY_TYPE b) // cmp keys: a<b // if not int type
+{
+    // for int
+    return a<b;
+}
+bool key_great(KEY_TYPE a, KEY_TYPE b) // cmp keys: a>b // if not int type
+{
+    // for int
+    return a>b;
+}
+void uinsert(node_t** tree, KEY_TYPE key,VALUE_TYPE value)
+    // Universal insert.
+    // Make new root if tree is empty
 {
     ASSERT(tree == NULL,
         "Insert error : Wrong call. NULL address got\n"
@@ -125,7 +137,7 @@ void uinsert(node_t** tree, int key,VALUE_TYPE value)  // Universal insert.
     }
 }
 
-node_t* insert(node_t* tree, int key,VALUE_TYPE value){ // Internal insert. Return inserted node
+node_t* insert(node_t* tree, KEY_TYPE key,VALUE_TYPE value){ // Internal insert. Return inserted node
     ASSERT(tree == NULL, 
         "Insert error : Insert can't be done in NULL pointer\n"
         "             : Use uinsert instead\n"
@@ -135,9 +147,9 @@ node_t* insert(node_t* tree, int key,VALUE_TYPE value){ // Internal insert. Retu
     node_t* parent;
     while(tree!=NULL){
         parent=tree;
-        if(key>tree->key){
+        if(key_great(key, tree->key)){
             tree=tree->right;
-        }else if(key<tree->key){
+        }else if(key_less(key, tree->key)){
             tree=tree->left;
         }else{
             fprintf(stderr,"Insert error : Key '%d' already exist\n",key);
@@ -151,7 +163,7 @@ node_t* insert(node_t* tree, int key,VALUE_TYPE value){ // Internal insert. Retu
     tree->parent=parent;
     tree->value=value;
 
-    if(key>parent->key)
+    if(key_great(key, parent->key))
         parent->right = tree;
     else
         parent->left = tree;
