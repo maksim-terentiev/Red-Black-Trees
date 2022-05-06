@@ -160,12 +160,12 @@ node_t* insert(node_t* tree, int key,VALUE_TYPE value){ // Internal insert. Retu
 }
 
 node_t* father(node_t* node) {
-    ASSERT(node == NULL, "Father error : null pointer!");
+    ASSERT(node == NULL, "Father error : NULL pointer got\n");
     return node->parent;
 }
 
 node_t* grandpa(node_t* node) {
-    ASSERT(node == NULL, "Grandpa error : null pointer!");
+    ASSERT(node == NULL, "Grandpa error : NULL pointer got\n");
     if(node->parent == NULL) {
         return NULL;
     } else {
@@ -174,7 +174,7 @@ node_t* grandpa(node_t* node) {
 }
 
 node_t* brother(node_t* node) {
-    ASSERT(node == NULL, "Brother error : null pointer!");
+    ASSERT(node == NULL, "Brother error : NULL pointer got\n");
     if(node->parent == NULL) {
         return NULL;
     } else {
@@ -197,7 +197,7 @@ node_t* brother(node_t* node) {
 
 node_t* uncle(node_t* node) {
     node_t* father_node;
-    ASSERT(node == NULL, "Uncle error : null pointer!");
+    ASSERT(node == NULL, "Uncle error : NULL pointer got\n");
     father_node = father(node);
 
     if(father_node == NULL) {
@@ -255,7 +255,7 @@ void left_rotate(node_t* pivot) {
     
     parent = pivot->parent;
     ASSERT(parent == NULL,
-        "Left Rotate error : Null father!\n"
+        "Left Rotate error : pivot's father is NULL\n"
     );
     ASSERT(parent->right != pivot,
         "Left Rotate error : Left child can't be left-rotated\n"
@@ -290,7 +290,7 @@ void right_rotate(node_t* pivot) {
     
     parent = pivot->parent;
     ASSERT(parent == NULL,
-        "Right Rotate error : Null father!\n"
+        "Right Rotate error : pivot's father is NULL\n"
     );
     ASSERT(parent->right == pivot,
         "Right Rotate error : Right child can't be right-rotated\n"

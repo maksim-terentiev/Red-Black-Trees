@@ -2,9 +2,6 @@
 #include <stdarg.h>
 #include "tree_print.h"
 
-// Internal functions
-void print_tree_no_circle_body(node_t* node);
-
 #define ENABLE_COLOR
 #ifdef ENABLE_COLOR
 // ANSI escape sequences
@@ -15,8 +12,6 @@ void print_tree_no_circle_body(node_t* node);
 #define STRANGE_COLOR   "\x1B[35m" // Magenta using for strange(error) behavior
 #define RESET           "\x1B[0m"
 #endif
-
-#define NUM_LEN 6 // need for not done show_tree()
 
 // wrappers of printf
 // Get from https://www.cyberforum.ru/c-beginners/thread1703404.html
@@ -76,6 +71,7 @@ int strange_printf(const char* format_str,...){
     return res;
 }
 
+
 // show tree
 void print_spaces(int n){
     int i;
@@ -85,7 +81,7 @@ void print_spaces(int n){
 #define TABSIZE 2
 int goup(node_t **tree, int *tab)  // goes up(back) and right to tree,
 {                                  // returns 0 if root
-    node_t *tmp=*tree;
+    node_t *tmp=*tree;             // prints "NULL" if necessary
     *tree=(*tree)->parent;
     *tab-=TABSIZE;
 
