@@ -123,7 +123,11 @@ void uinsert(node_t** tree, KEY_TYPE key,VALUE_TYPE value)
         "Insert error : Wrong call. NULL address got\n"
         "             : Usage 'uinsert(&root,key);'\n"
     );
-
+#ifdef DEBUG
+    LOG("Uinsert : start\n");
+    LOG("Before insert:\n");
+    print_tree(*tree); putchar('\n');
+#endif
     if(*tree == NULL){ // Initiation of new tree
         *tree = new_node();
         (*tree)->key=key;
@@ -135,6 +139,11 @@ void uinsert(node_t** tree, KEY_TYPE key,VALUE_TYPE value)
             "UInsert : Property test failed!\n"
         );
     }
+#ifdef DEBUG
+    LOG("Uinsert : ended\n");
+    LOG("After insert:\n");
+    print_tree(*tree); putchar('\n');
+#endif
 }
 
 node_t* insert(node_t* tree, KEY_TYPE key,VALUE_TYPE value){ // Internal insert. Return inserted node
